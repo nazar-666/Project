@@ -1,0 +1,58 @@
+.error{
+	color:red;'
+}
+
+div {
+	padding: 5px;
+}
+   			
+#welcome {
+	padding-top: 90px; 
+	padding-left: 0px;
+}
+			
+#welcome h1{
+	font-weight: 900;
+	font-size: 76px;
+}
+
+#passwdRes .short{
+	font-weight:bold;
+	color:#FF0000;
+	font-size:larger;
+}
+#passwdRes .weak{
+	font-weight:bold;
+	color:orange;
+	font-size:larger;
+}
+#passwdRes .good{
+	font-weight:bold;
+	color:#2D98F3;
+	font-size:larger;
+}
+#passwdRes .strong{
+	font-weight:bold;
+	color: limegreen;
+	font-size:larger;
+}
+
+#repPasswdRes .notEqual{
+	font-weight:bold;
+	color:#FF0000;
+	font-size:larger;
+}
+
+#repPasswdRes .equal{
+	font-weight:bold;
+	color: limegreen;
+	font-size:larger;
+}
+			
+/* #join { */
+/* 	padding-top: 50px; */
+/* 	} */
+			
+/* #join a{ */
+/* 	color: #1E28B2;	 */
+/* } */

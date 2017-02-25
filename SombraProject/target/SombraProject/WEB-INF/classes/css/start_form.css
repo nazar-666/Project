@@ -1,0 +1,29 @@
+body {
+	background-image: url(SombraProject/src/main/webapp/img/ocean.jpg);
+}
+
+.error{
+	color:red;'
+}
+
+div {
+	padding: 5px;
+}
+   			
+#welcome {
+	padding-top: 90px; 
+	padding-left: 0px;
+}
+			
+#welcome h1{
+	font-weight: 900;
+	font-size: 76px;
+}
+			
+#join {
+	padding-top: 50px;
+	}
+			
+#join a{
+	color: #1E28B2;	
+}
