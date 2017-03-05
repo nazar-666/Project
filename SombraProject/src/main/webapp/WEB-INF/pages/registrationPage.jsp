@@ -72,11 +72,7 @@
 				var login = $("#login").val();
 				var clientName = $("#clientName").val();
 				var clientSurname = $("#clientSurname").val();
-				var date = new Date($('#clientDate').val());
-				var day = date.getDate();
-				var month = date.getMonth()+1;
-				var year = date.getFullYear();
-				var clientDate = day+"."+month+"."+year;
+				var date = $('#clientDate').val();
 				var clientEmail=$("#clientEmail").val();
 				var password = $('#password').val();
 				var repeatPasswd = $("#repeatPasswd").val();
@@ -105,7 +101,7 @@
 		        	$('#email').html("");
 		        	$('#passwd').html("");
 		        	$('#repPasswd').html("");
-				}else if (clientDate=='NaN.NaN.NaN'){
+				}else if (date==''){
 					$('#logIN').html("");
 		        	$('#name').html("");
 		        	$('#surname').html("");
@@ -153,7 +149,7 @@
 	 			  		data: '&login=' + login + 
 	 			  			"&clientName=" + clientName + 
 	 			  			"&clientSurname=" + clientSurname + 
-	 			  			"&clientDate=" + clientDate +
+	 			  			"&clientDate=" + date +
 	 			  			"&clientEmail=" + clientEmail +
 	 			  			"&password=" + password,
 	 			  			
