@@ -21,6 +21,13 @@ import ua.project.sombraproject.model.Category;
 @Service
 @Transactional
 public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
+	final String INSERT_CATEGORY = "INSERT INTO categories(cat_name, cat_descr, cat_img)VALUES(?,?,?)";
+	final String UPDATE_CATEGORY = "UPDATE categories SET cat_name=?, cat_descr=?, cat_img=? " + "WHERE cat_id=?";
+	final String DELETE_CATEGORY = "DELETE FROM categories WHERE cat_id=?";
+	final String GET_CATEGORY = "SELECT * FROM categories WHERE cat_id = ";
+	final String GET_CATEGORIES_NAME = "SELECT cat_name FROM categories";
+	final String GET_ALL_CATEGORIES = "SELECT * FROM categories";
+	final String GET_CATEGORY_ID = "SELECT cat_id FROM categories WHERE cat_name=?";
 
 	@Autowired
 	public CategoryDAOImpl(DataSource dataSource) {
@@ -28,29 +35,24 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	}
 
 	public void saveCategory(Category category) {
-		String sql = "INSERT INTO categories(cat_name, cat_descr, cat_img)VALUES(?,?,?)";
-		this.getJdbcTemplate().update(sql, category.getCategoryName(), category.getCategoryDescr(), category.getCategoryImg());
+		this.getJdbcTemplate().update(INSERT_CATEGORY, category.getCategoryName(), category.getCategoryDescr(), category.getCategoryImg());
 
 	}
 
 	public void updateCategory(Category category) {
-		String sql = "UPDATE categories SET cat_name=?, cat_descr=?, cat_img=? " + "WHERE cat_id=?";
-		this.getJdbcTemplate().update(sql, category.getCategoryName(), category.getCategoryDescr(), category.getCategoryImg(), category.getCategoryID());
+		this.getJdbcTemplate().update(UPDATE_CATEGORY, category.getCategoryName(), category.getCategoryDescr(), category.getCategoryImg(), category.getCategoryID());
 	}
 
 	public void deleteCategory(int categoryID) {
-		String sql = "DELETE FROM categories WHERE cat_id=?";
-
 		try {
-			this.getJdbcTemplate().update(sql, categoryID);
+			this.getJdbcTemplate().update(DELETE_CATEGORY, categoryID);
 		} catch (EmptyResultDataAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public Category getCategory(int categoryID) {
-		String sql = "SELECT * FROM categories cp WHERE cat_id = " + categoryID;
-		return this.getJdbcTemplate().query(sql, new ResultSetExtractor<Category>() {
+		return this.getJdbcTemplate().query(GET_CATEGORY + categoryID, new ResultSetExtractor<Category>() {
 
 			public Category extractData(ResultSet rs) throws SQLException, DataAccessException {
 				if (rs.next()) {
@@ -69,9 +71,8 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	}
 
 	public List<String> categoryNameList() {
-		String sql = "SELECT cat_name FROM categories";
 		try {
-			List<String> categoryNameList = this.getJdbcTemplate().query(sql, new RowMapper<String>() {
+			List<String> categoryNameList = this.getJdbcTemplate().query(GET_CATEGORIES_NAME, new RowMapper<String>() {
 
 				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Category categoryNameList = new Category();
@@ -87,9 +88,8 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	}
 
 	public List<Category> categoryList() {
-		String sql = "SELECT * FROM categories";
 		try {
-			List<Category> categoryList = this.getJdbcTemplate().query(sql, new RowMapper<Category>() {
+			List<Category> categoryList = this.getJdbcTemplate().query(GET_ALL_CATEGORIES, new RowMapper<Category>() {
 
 				public Category mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Category categoryList = new Category();
@@ -109,9 +109,8 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	}
 
 	public int getCategoryID(String categoryName) {
-		String sql = "SELECT cat_id FROM categories WHERE cat_name=?";
 		try {
-			return Integer.valueOf(this.getJdbcTemplate().queryForObject(sql, new Object[] { categoryName }, String.class));
+			return Integer.valueOf(this.getJdbcTemplate().queryForObject(GET_CATEGORY_ID, new Object[] { categoryName }, String.class));
 		} catch (EmptyResultDataAccessException e) {
 			return -1;
 		}
