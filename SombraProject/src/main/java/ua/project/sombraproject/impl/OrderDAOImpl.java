@@ -19,6 +19,9 @@ import ua.project.sombraproject.model.Order;
 @Service
 @Transactional
 public class OrderDAOImpl extends JdbcDaoSupport implements OrderDAO {
+	final String INSERT_ORDER = "INSERT INTO orders(goods_id, client_id, order_amount, order_price, delivery_meth, payment_meth)VALUES(?,?,?,?,?,?)";
+	final String DELETE_ORDER = "DELETE FROM orders WHERE order_id=?";
+	final String SELECT_ALL_ORDERS = "SELECT * FROM orders";
 
 	@Autowired
 	public OrderDAOImpl(DataSource dataSource) {
@@ -26,24 +29,20 @@ public class OrderDAOImpl extends JdbcDaoSupport implements OrderDAO {
 	}
 
 	public void newOrder(Order order) {
-		String sql = "INSERT INTO orders(goods_id, client_id, order_amount, order_price, delivery_meth, payment_meth)VALUES(?,?,?,?,?,?)";
-		this.getJdbcTemplate().update(sql, order.getOrderGoodsID(), order.getOrderClientID(), order.getOrderAmount(), order.getOrderPrice(), order.getDeliveryMeth(), order.getPaymentMeth());
+		this.getJdbcTemplate().update(INSERT_ORDER, order.getOrderGoodsID(), order.getOrderClientID(), order.getOrderAmount(), order.getOrderPrice(), order.getDeliveryMeth(), order.getPaymentMeth());
 	}
 
 	public void deleteOrder(int orderID) {
-		String sql = "DELETE FROM orders WHERE order_id=?";
-
 		try {
-			this.getJdbcTemplate().update(sql, orderID);
+			this.getJdbcTemplate().update(DELETE_ORDER, orderID);
 		} catch (EmptyResultDataAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public List<Order> orderList() {
-		String sql = "SELECT * FROM orders";
 		try {
-			List<Order> orderList = this.getJdbcTemplate().query(sql, new RowMapper<Order>() {
+			List<Order> orderList = this.getJdbcTemplate().query(SELECT_ALL_ORDERS, new RowMapper<Order>() {
 
 				public Order mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Order orderList = new Order();
