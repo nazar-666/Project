@@ -21,6 +21,17 @@ import ua.project.sombraproject.model.Producer;
 @Service
 @Transactional
 public class ProducerDAOImpl extends JdbcDaoSupport implements ProducerDAO {
+	final String DISABLE = "DISABLE";
+	final String ENABLE = "ENABLE";
+	final String INSERT_PRODUCER = "INSERT INTO producers(prod_name, prod_descr, prod_logo, prod_enable)VALUES(?,?,?, '" + ENABLE + "')";
+	final String DELETE_PRODUCER = "DELETE FROM producers WHERE prod_id=?";
+	final String DISABLE_PRODUCER = "UPDATE producers SET prod_enable = '" + DISABLE + "' WHERE prod_id = ?";
+	final String ENABLE_PRODUCER = "UPDATE producers SET prod_enable = '" + ENABLE + "' WHERE prod_id = ?";
+	final String SELECT_ALL_PRODUCERS = "SELECT * FROM producers";
+	final String SELECT_PRODUCER_NAME = "SELECT prod_name FROM producers";
+	final String SELECT_PRODUCER_ID = "SELECT prod_id FROM producers WHERE prod_name=?";
+	final String SELECT_PRODUCER = "SELECT * FROM producers WHERE prod_id=";
+	final String EDIT_PRODUCER = "UPDATE producers SET prod_name=?, prod_descr=?, prod_logo=?, prod_enable='" + ENABLE + "' WHERE prod_id=?";
 
 	@Autowired
 	public ProducerDAOImpl(DataSource dataSource) {
@@ -28,42 +39,36 @@ public class ProducerDAOImpl extends JdbcDaoSupport implements ProducerDAO {
 	}
 
 	public void newProducer(Producer producer) {
-		String sql = "INSERT INTO producers(prod_name, prod_descr, prod_logo, prod_enable)VALUES(?,?,?, 'ENABLE')";
-		this.getJdbcTemplate().update(sql, producer.getProducerName(), producer.getProducerDescr(), producer.getProducerLogo());
+		this.getJdbcTemplate().update(INSERT_PRODUCER, producer.getProducerName(), producer.getProducerDescr(), producer.getProducerLogo());
 	}
 
 	public void deleteProducer(int producerID) {
-		String sql = "DELETE FROM producers WHERE prod_id=?";
-
 		try {
-			this.getJdbcTemplate().update(sql, producerID);
+			this.getJdbcTemplate().update(DELETE_PRODUCER, producerID);
 		} catch (EmptyResultDataAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void disableProducer(int producerID) {
-		String sql = "UPDATE producers SET prod_enable = 'DISABLE' WHERE prod_id = ?";
 		try {
-			this.getJdbcTemplate().update(sql, producerID);
+			this.getJdbcTemplate().update(DISABLE_PRODUCER, producerID);
 		} catch (EmptyResultDataAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void enableProducer(int producerID) {
-		String sql = " UPDATE producers SET prod_enable = 'ENABLE' WHERE prod_id = ?";
 		try {
-			this.getJdbcTemplate().update(sql, producerID);
+			this.getJdbcTemplate().update(ENABLE_PRODUCER, producerID);
 		} catch (EmptyResultDataAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public List<Producer> producerList() {
-		String sql = "SELECT * FROM producers";
 		try {
-			List<Producer> producerList = this.getJdbcTemplate().query(sql, new RowMapper<Producer>() {
+			List<Producer> producerList = this.getJdbcTemplate().query(SELECT_ALL_PRODUCERS, new RowMapper<Producer>() {
 
 				public Producer mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Producer producerList = new Producer();
@@ -84,9 +89,8 @@ public class ProducerDAOImpl extends JdbcDaoSupport implements ProducerDAO {
 	}
 
 	public List<String> producerNameList() {
-		String sql = "SELECT prod_name FROM producers";
 		try {
-			List<String> producerNameList = this.getJdbcTemplate().query(sql, new RowMapper<String>() {
+			List<String> producerNameList = this.getJdbcTemplate().query(SELECT_PRODUCER_NAME, new RowMapper<String>() {
 
 				public String mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Producer producerNameList = new Producer();
@@ -102,17 +106,15 @@ public class ProducerDAOImpl extends JdbcDaoSupport implements ProducerDAO {
 	}
 
 	public int getProducerID(String producerName) {
-		String sql = "SELECT prod_id FROM producers WHERE prod_name=?";
 		try {
-			return Integer.valueOf(this.getJdbcTemplate().queryForObject(sql, new Object[] { producerName }, String.class));
+			return Integer.valueOf(this.getJdbcTemplate().queryForObject(SELECT_PRODUCER_ID, new Object[] { producerName }, String.class));
 		} catch (EmptyResultDataAccessException e) {
 			return -1;
 		}
 	}
 
 	public Producer getProducerInfo(int producerID) {
-		String sql = "SELECT * FROM producers WHERE prod_id = " + producerID;
-		return this.getJdbcTemplate().query(sql, new ResultSetExtractor<Producer>() {
+		return this.getJdbcTemplate().query(SELECT_PRODUCER + producerID, new ResultSetExtractor<Producer>() {
 
 			public Producer extractData(ResultSet rs) throws SQLException, DataAccessException {
 				if (rs.next()) {
@@ -129,7 +131,6 @@ public class ProducerDAOImpl extends JdbcDaoSupport implements ProducerDAO {
 	}
 
 	public void editProducer(Producer producer) {
-		String sql = "UPDATE producers SET prod_name=?, prod_descr=?, prod_logo=?, prod_enable='ENABLE' WHERE prod_id =?";
-		this.getJdbcTemplate().update(sql, producer.getProducerName(), producer.getProducerDescr(), producer.getProducerLogo(), producer.getProducerID());
+		this.getJdbcTemplate().update(EDIT_PRODUCER, producer.getProducerName(), producer.getProducerDescr(), producer.getProducerLogo(), producer.getProducerID());
 	}
 }
