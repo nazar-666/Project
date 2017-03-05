@@ -20,6 +20,16 @@ import ua.project.sombraproject.model.Client;
 @Service
 @Transactional
 public class ClientDAOImpl extends JdbcDaoSupport implements ClientDAO {
+	private final String ENABLE = "ENABLE";
+	private final String DISABLE = "DISABLE";
+	private final String USER_ROLE = "USER";
+	private final String CHECK_CLIENT = "SELECT cp.client_login, cp.client_pass " + "FROM clients cp WHERE cp.client_enable = '" + ENABLE + "' AND cp.client_login = ? ";
+	private final String GET_CLIENT_ROLE = "Select client_role FROM clients WHERE client_enable = '" + ENABLE + "' AND client_login = ? ";
+	private final String SELECT_ALL_CLIENTS = "SELECT * FROM clients";
+	private final String INSERT_CLIENT = "INSERT INTO clients(client_login, client_pass, client_role, client_enable, client_name, client_sur, client_age, client_email)VALUES(?,?,'" + USER_ROLE + "','" + ENABLE + "',?,?,?,?)";
+	private final String DISABLE_CLIENT = "UPDATE clients SET client_enable = '" + DISABLE + "' WHERE client_id = ?";
+	private final String ENABLE_CLIENT = "UPDATE clients SET client_enable = '" + ENABLE + "' WHERE client_id = ?";
+	private final String GET_CLIENT_ID = "SELECT client_id FROM clients WHERE client_login=?";
 
 	@Autowired
 	public ClientDAOImpl(DataSource dataSource) {
@@ -27,33 +37,25 @@ public class ClientDAOImpl extends JdbcDaoSupport implements ClientDAO {
 	}
 
 	public Client checkClient(String login) {
-		String sql = "SELECT cp.client_login, cp.client_pass " + "FROM clients cp WHERE cp.client_enable = 'ENABLE' AND cp.client_login = ? ";
-
 		Object[] params = new Object[] { login };
 		ClientMapper mapper = new ClientMapper();
 		try {
-			Client userInfo = this.getJdbcTemplate().queryForObject(sql, params, mapper);
+			Client userInfo = this.getJdbcTemplate().queryForObject(CHECK_CLIENT, params, mapper);
 			return userInfo;
 		} catch (EmptyResultDataAccessException e) {
 			return null;
 		}
 	}
 
-	public List<String> getClientRoles(String login) {
-		String sql = "Select client_role "//
-				+ "FROM clients WHERE client_enable = 'ENABLE' AND client_login = ? ";
-
+	public List<String> getClientRole(String login) {
 		Object[] params = new Object[] { login };
-
-		List<String> roles = this.getJdbcTemplate().queryForList(sql, params, String.class);
-
+		List<String> roles = this.getJdbcTemplate().queryForList(GET_CLIENT_ROLE, params, String.class);
 		return roles;
 	}
 
 	public List<Client> clientList() {
-		String sql = "SELECT * FROM clients";
 		try {
-			List<Client> clientList = this.getJdbcTemplate().query(sql, new RowMapper<Client>() {
+			List<Client> clientList = this.getJdbcTemplate().query(SELECT_ALL_CLIENTS, new RowMapper<Client>() {
 
 				public Client mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Client clientList = new Client();
@@ -76,35 +78,31 @@ public class ClientDAOImpl extends JdbcDaoSupport implements ClientDAO {
 	}
 
 	public void newClient(Client client) {
-		String sql = "INSERT INTO clients(client_login, client_pass, client_role, client_enable, client_name, client_sur, client_age, client_email)VALUES(?,?,'USER','ENABLE',?,?,?,?)";
-		this.getJdbcTemplate().update(sql, client.getLogin(), client.getPassword(), client.getClientName(), client.getClientSurname(), client.getClientDate(), client.getClientEmail());
+		this.getJdbcTemplate().update(INSERT_CLIENT, client.getLogin(), client.getPassword(), client.getClientName(), client.getClientSurname(), client.getClientDate(), client.getClientEmail());
 	}
 
 	public void deleteClient(int clientID) {
 	}
 
 	public void disableClient(int clientID) {
-		String sql = " UPDATE clients SET client_enable = 'DISABLE' WHERE client_id = ?";
 		try {
-			this.getJdbcTemplate().update(sql, clientID);
+			this.getJdbcTemplate().update(DISABLE_CLIENT, clientID);
 		} catch (EmptyResultDataAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public void enableClient(int clientID) {
-		String sql = " UPDATE clients SET client_enable = 'ENABLE' WHERE client_id = ?";
 		try {
-			this.getJdbcTemplate().update(sql, clientID);
+			this.getJdbcTemplate().update(ENABLE_CLIENT, clientID);
 		} catch (EmptyResultDataAccessException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public int getClientID(String clientName) {
-		String sql = "SELECT client_id FROM clients WHERE client_login=?";
 		try {
-			return Integer.valueOf(this.getJdbcTemplate().queryForObject(sql, new Object[] { clientName }, String.class));
+			return Integer.valueOf(this.getJdbcTemplate().queryForObject(GET_CLIENT_ID, new Object[] { clientName }, String.class));
 		} catch (EmptyResultDataAccessException e) {
 			return -1;
 		}
