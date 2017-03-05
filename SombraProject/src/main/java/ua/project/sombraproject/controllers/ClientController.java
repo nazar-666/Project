@@ -28,15 +28,18 @@ public class ClientController {
 	public @ResponseBody
 	Client saveClient(HttpServletRequest request) throws Exception {
 		Client client = new Client();
+		LocalDate localDate = LocalDate.parse(request.getParameter("clientDate"));
 
 		client.setLogin(request.getParameter("login"));
 		client.setClientName(request.getParameter("clientName"));
 		client.setClientSurname(request.getParameter("clientSurname"));
-		client.setClientDate(request.getParameter("clientDate"));
+		client.setClientDate(localDate.getYear() + "-" + localDate.getMonthValue() + "-" + localDate.getDayOfMonth());
 		client.setClientEmail(request.getParameter("clientEmail"));
 		client.setPassword(request.getParameter("password"));
 
-		clientDAO.newClient(client);
+		try (Connection con = daoFactory.getConnection()) {
+			daoFactory.getClientDAO(con).newClient(client);
+		}
 		return client;
 	}
 
