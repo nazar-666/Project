@@ -22,6 +22,18 @@ import ua.project.sombraproject.model.Goods;
 @Service
 @Transactional
 public class GoodsDAOImpl extends JdbcDaoSupport implements GoodsDAO {
+	final String AVAILABLE = "AVAILABLE";
+	final String NOT_AVAILABLE = "NOT_AVAILABLE";
+	final String INSERT_GOODS = "INSERT INTO goods(cat_id, prod_id, goods_name, goods_price, goods_descr, goods_avail, img_path_first, img_path_second, img_path_third)VALUES(?,?,?,?,?,'" + AVAILABLE + "',?,?,?)";
+	final String UPDATE_GOODS = "UPDATE goods SET cat_id=?, prod_id=?, goods_name=?, goods_price=?, goods_descr=?, goods_avail='" + AVAILABLE + "', img_path_first=?, img_path_second=?, img_path_third=? WHERE goods_id =?";
+	final String DELETE_GOODS = "DELETE FROM goods WHERE goods_id=?";
+	final String DISABLE_GOODS = "UPDATE goods SET goods_avail = '" + NOT_AVAILABLE + "' WHERE goods_id = ?";
+	final String ENABLE_GOODS = "UPDATE goods SET goods_avail = '" + AVAILABLE + "' WHERE goods_id = ?";
+	final String SELECT_ALL_GOODS = "SELECT * FROM goods";
+	final String FILTER_GOODS_BY_PRICE = "SELECT * FROM goods WHERE goods_price BETWEEN ? AND ?";
+	final String FILTER_GOODS_BY_NAME = "SELECT * FROM goods WHERE goods_name LIKE '%?%'";
+	final String FILTER_GOODS_BY_CATEGORY = "SELECT * FROM goods WHERE cat_id = ";
+	final String FILTER_GOODS_BY_ID = "SELECT * FROM goods WHERE goods_id = ";
 
 	@Autowired
 	public GoodsDAOImpl(DataSource dataSource) {
@@ -29,53 +41,45 @@ public class GoodsDAOImpl extends JdbcDaoSupport implements GoodsDAO {
 	}
 
 	public void newGoods(Goods goods) {
-		String sql = "INSERT INTO goods(cat_id, prod_id, goods_name, goods_price, goods_descr, goods_avail, img_path_first, img_path_second, img_path_third)VALUES(?,?,?,?,?,'AVAILABLE',?,?,?)";
-		this.getJdbcTemplate().update(sql, goods.getGoodsCategoryID(), goods.getGoodsProducerID(), goods.getGoodsName(), goods.getGoodsPrice(), goods.getGoodsDescr(), goods.getGoodsFirstImg(), goods.getGoodsSecondImg(), goods.getGoodsThirdImg());
+		this.getJdbcTemplate().update(INSERT_GOODS, goods.getGoodsCategoryID(), goods.getGoodsProducerID(), goods.getGoodsName(), goods.getGoodsPrice(), goods.getGoodsDescr(), goods.getGoodsFirstImg(), goods.getGoodsSecondImg(),
+				goods.getGoodsThirdImg());
 	}
 
 	public void updateGoods(Goods goods) {
-		String sql = "UPDATE goods SET cat_id=?, prod_id=?, goods_name=?, goods_price=?, goods_descr=?, goods_avail='AVAILABLE', img_path_first=?, img_path_second=?, img_path_third=? WHERE goods_id =?";
-		this.getJdbcTemplate().update(sql, goods.getGoodsCategoryID(), goods.getGoodsProducerID(), goods.getGoodsName(), goods.getGoodsPrice(), goods.getGoodsDescr(), goods.getGoodsFirstImg(), goods.getGoodsSecondImg(), goods.getGoodsThirdImg(),
-				goods.getGoodsID());
+		this.getJdbcTemplate().update(UPDATE_GOODS, goods.getGoodsCategoryID(), goods.getGoodsProducerID(), goods.getGoodsName(), goods.getGoodsPrice(), goods.getGoodsDescr(), goods.getGoodsFirstImg(), goods.getGoodsSecondImg(),
+				goods.getGoodsThirdImg(), goods.getGoodsID());
 	}
 
 	public void deleteGoods(int goodsID) {
-		String sql = "DELETE FROM goods WHERE goods_id=?";
-		doUpdate(sql, goodsID);
+		doUpdate(DELETE_GOODS, goodsID);
 	}
 
 	public void disableGoods(int goodsID) {
-		String sql = " UPDATE goods SET goods_avail = 'DISABLE' WHERE goods_id = ?";
-		doUpdate(sql, goodsID);
+		doUpdate(DISABLE_GOODS, goodsID);
 	}
 
 	public void enableGoods(int goodsID) {
-		String sql = " UPDATE goods SET goods_avail = 'ENABLE' WHERE goods_id = ?";
-		doUpdate(sql, goodsID);
+		doUpdate(ENABLE_GOODS, goodsID);
 	}
 
 	public List<Goods> allGoodsList() {
-		String sql = "SELECT * FROM goods";
 		Object[] params = new Object[] {};
-		return doQuery(sql, params);
+		return doQuery(SELECT_ALL_GOODS, params);
 	}
 
 	public List<Goods> filterByPrice(double minPrice, double maxPrice) {
-		String sql = "SELECT * FROM goods WHERE goods_price BETWEEN ? AND ?";
 		Object[] params = new Object[] { minPrice, maxPrice };
-		return doQuery(sql, params);
+		return doQuery(FILTER_GOODS_BY_PRICE, params);
 	}
 
 	public List<Goods> filterByName(String goodsName) {
-		String sql = "SELECT * FROM goods WHERE goods_name LIKE '%?%'";
 		Object[] params = new Object[] { goodsName };
-		return doQuery(sql, params);
+		return doQuery(FILTER_GOODS_BY_NAME, params);
 	}
 
 	public List<Goods> filterByCategory(int goodsCategoryID) {
-		String sql = "SELECT * FROM goods WHERE cat_id = " + goodsCategoryID;
 		try {
-			List<Goods> goodsList = this.getJdbcTemplate().query(sql, new RowMapper<Goods>() {
+			List<Goods> goodsList = this.getJdbcTemplate().query(FILTER_GOODS_BY_CATEGORY + goodsCategoryID, new RowMapper<Goods>() {
 
 				public Goods mapRow(ResultSet rs, int rowNum) throws SQLException {
 					Goods goodsList = new Goods();
@@ -111,8 +115,7 @@ public class GoodsDAOImpl extends JdbcDaoSupport implements GoodsDAO {
 	}
 
 	public Goods getGoodsByID(int goodsID) {
-		String sql = "SELECT * FROM goods WHERE goods_id = " + goodsID;
-		return this.getJdbcTemplate().query(sql, new ResultSetExtractor<Goods>() {
+		return this.getJdbcTemplate().query(FILTER_GOODS_BY_ID + goodsID, new ResultSetExtractor<Goods>() {
 
 			public Goods extractData(ResultSet rs) throws SQLException, DataAccessException {
 				if (rs.next()) {
