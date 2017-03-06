@@ -28,7 +28,7 @@ public class MyDBAuthenticationService implements UserDetailsService {
 			throw new UsernameNotFoundException("User " + username + " was not found in the database");
 		}
 
-		List<String> roles = userInfoDAO.getClientRoles(username);
+		List<String> roles = userInfoDAO.getClientRole(username);
 
 		List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
 		if (roles != null) {

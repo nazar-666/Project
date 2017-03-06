@@ -9,7 +9,7 @@ public interface ClientDAO {
 	// for login and authentication
 	public Client checkClient(String login);
 
-	public List<String> getClientRoles(String login);
+	public List<String> getClientRole(String login);
 
 	// for work with users information
 	public int getClientID(String clientName);

@@ -1,6 +1,10 @@
 package ua.project.sombraproject.model;
 
-public class Client {
+import java.io.Serializable;
+
+public class Client implements Serializable {
+	private static final long serialVersionUID = -7499802200694021037L;
+
 	private int clientID;
 	private String login;
 	private String password;

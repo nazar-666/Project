@@ -1,6 +1,10 @@
 package ua.project.sombraproject.model;
 
-public class Category {
+import java.io.Serializable;
+
+public class Category implements Serializable {
+	private static final long serialVersionUID = 1296842246420323915L;
+
 	private int categoryID;
 	private String categoryName;
 	private String categoryDescr;

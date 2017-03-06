@@ -1,6 +1,7 @@
 package ua.project.sombraproject.controllers;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,9 +38,7 @@ public class ClientController {
 		client.setClientEmail(request.getParameter("clientEmail"));
 		client.setPassword(request.getParameter("password"));
 
-		try (Connection con = daoFactory.getConnection()) {
-			daoFactory.getClientDAO(con).newClient(client);
-		}
+		clientDAO.newClient(client);
 		return client;
 	}
 

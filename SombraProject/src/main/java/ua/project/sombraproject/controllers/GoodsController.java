@@ -88,10 +88,18 @@ public class GoodsController {
 		return goods;
 	}
 
-	@RequestMapping(value = "/admin/deleteGoods", method = RequestMethod.GET)
+	// @RequestMapping(value = "/admin/deleteGoods", method =
+	// RequestMethod.DELETE)
+	// public ModelAndView deleteGoods(@PathVariable("goodsID") String goodsID)
+	// {
+	// goodsDAO.deleteGoods(Integer.parseInt(goodsID));
+	// return new ModelAndView("redirect:/admin/goodsList");
+	// }
+
+	@RequestMapping(value = "/admin/deleteGoods", method = RequestMethod.POST)
 	public ModelAndView deleteGoods(HttpServletRequest request) {
 		goodsDAO.deleteGoods(Integer.parseInt(request.getParameter("goodsID")));
-		return new ModelAndView("redirect:/admin");
+		return new ModelAndView("redirect:/admin/goodsList");
 	}
 
 	@RequestMapping(value = "/client/choosedCategory", method = RequestMethod.GET)

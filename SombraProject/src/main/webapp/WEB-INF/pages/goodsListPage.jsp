@@ -10,6 +10,50 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+   		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<!--    		<script type="text/javascript"> 
+	   		$(document).ready(function(){
+	   		    $("#table").on('click','.btnSelect',function(){
+	   		         // get the current row
+	   		         var currentRow=$(this).closest("tr"); 
+	   		         var goodsID=currentRow.find("td:eq(0)").html(); // get current row 1st table cell TD value
+	   		      
+	   		         $.ajax({
+					 	type: "delete",
+					  	url: "${pageContext.request.contextPath}/admin/deleteGoods",
+					  	cache: false,
+		 			  	data: "&goodsID=" + goodsID,
+		 			  	success: function(response){
+						},
+				  		error: function(){      
+				   			alert(goodsID);
+				  		}
+					});
+	   		    });
+	   		});
+		</script>-->
+		<script type="text/javascript">
+	   		$(document).ready(function(){
+	   		    $("#table").on('click','.btnSelect',function(){
+	   		         // get the current row
+	   		         var currentRow=$(this).closest("tr"); 
+	   		         var goodsID=currentRow.find("td:eq(0)").html(); // get current row 1st table cell TD value
+	   		      
+	   		         $.ajax({
+					 	type: "post",
+					  	url: "${pageContext.request.contextPath}/admin/deleteGoods",
+					  	cache: false,
+		 			  	data: "&goodsID=" + goodsID,
+		 			  	success: function(response){
+						},
+				  		error: function(){      
+				   			alert(goodsID);
+				  		}
+					});
+	   		    });
+	   		});
+		</script>
     </head>
 	<body background="http://localhost:8080/SombraProject/img/ocean.jpg">
     	<header>  		
@@ -35,10 +79,10 @@
     	
 		<div class="container">
 	  		<h2 align = "center" >GOODS LIST</h2><br/><br/>            
-				<table class="table table-hover">
+				<table id="table" class="table table-hover">
 			    	<thead>
 			      		<tr>
-					        <th>Goods ID</th>
+					        <td>Goods ID</td>
 					        <th>Category ID</th>
 					        <th>Producer ID</th>
 					        <th>Name</th>
@@ -67,7 +111,7 @@
 			                <td>
 			                <a href="${pageContext.request.contextPath}/admin/editingGoods?goodsID=${goodsList.goodsID}">Edit</a>
 			                        &nbsp;&nbsp;&nbsp;&nbsp;
-			                    <a href="${pageContext.request.contextPath}/admin/deleteGoods?goodsID=${goodsList.goodsID}">Delete</a>							
+			                <button class="btnSelect">Select</button>						
 			            	</td>
 			      		</tr>
 			    	</tbody>

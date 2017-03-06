@@ -57,8 +57,6 @@ public class ApplicationContextConfig {
 		dataSource.setUsername(environment.getProperty("ds.username"));
 		dataSource.setPassword(environment.getProperty("ds.password"));
 
-		System.out.println("## getDataSource: " + dataSource);
-
 		return dataSource;
 	}
 

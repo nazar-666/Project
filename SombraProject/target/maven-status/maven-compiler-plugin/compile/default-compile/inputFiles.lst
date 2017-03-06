@@ -3,7 +3,9 @@ E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\impl\CategoryDAO
 E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\dao\ProducerDAO.java
 E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\model\Producer.java
 E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\config\ApplicationContextConfig.java
+E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\dao\MyDAOFactory.java
 E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\impl\GoodsDAOImpl.java
+E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\dao\DAOFactory.java
 E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\authentication\MyDBAuthenticationService.java
 E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\dao\GoodsDAO.java
 E:\JAVA_EE\SombraProject\src\main\java\ua\project\sombraproject\impl\ProducerDAOImpl.java

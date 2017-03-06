@@ -1,6 +1,10 @@
 package ua.project.sombraproject.model;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
+	private static final long serialVersionUID = 1079033569986492057L;
+
 	private int orderID;
 	private int orderGoodsID;
 	private String orderGoodsName;

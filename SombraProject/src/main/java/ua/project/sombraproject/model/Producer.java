@@ -1,6 +1,10 @@
 package ua.project.sombraproject.model;
 
-public class Producer {
+import java.io.Serializable;
+
+public class Producer implements Serializable {
+	private static final long serialVersionUID = 8611954479229453350L;
+
 	private int producerID;
 	private String producerName;
 	private String producerDescr;
